@@ -1,5 +1,6 @@
 // Описаний в документації
 import flatpickr from 'flatpickr';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 // Додатковий імпорт стилів
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -23,17 +24,28 @@ const refs = {
 };
 
 flatpickr(refs.inputDate, options);
-const currentDate = new Date();
 
+refs.startBtn.disabled = true;
+refs.inputDate.addEventListener('input', onInput);
+
+function onInput() {
+  const milliseconds = refs.inputDate._flatpickr.latestSelectedDateObj - new Date();
+  if (milliseconds < 0) {
+    Notify.failure('Please choose a date in the future');
+    return;
+  }
+  refs.startBtn.disabled = false;
+}
 refs.startBtn.addEventListener('click', onSetDate);
 
-function onSetDate(e) {
-  const countDown = refs.inputDate._flatpickr.latestSelectedDateObj - currentDate;
-
-  refs.days.textContent = convertMs(countDown).days;
-  refs.hours.textContent = convertMs(countDown).hours;
-  refs.minutes.textContent = convertMs(countDown).minutes;
-  refs.seconds.textContent = convertMs(countDown).seconds;
+function onSetDate() {
+  setInterval(() => {
+    const milliseconds = refs.inputDate._flatpickr.latestSelectedDateObj - new Date();
+    refs.days.textContent = addLeadingZero(convertMs(milliseconds).days);
+    refs.hours.textContent = addLeadingZero(convertMs(milliseconds).hours);
+    refs.minutes.textContent = addLeadingZero(convertMs(milliseconds).minutes);
+    refs.seconds.textContent = addLeadingZero(convertMs(milliseconds).seconds);
+  }, 1000);
 }
 
 function convertMs(ms) {
@@ -53,4 +65,8 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
+}
+
+function addLeadingZero(value) {
+  return value.toString().padStart(2, 0);
 }
