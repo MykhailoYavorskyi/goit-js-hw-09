@@ -41,9 +41,10 @@ refs.startBtn.addEventListener('click', onSetDate);
 function onSetDate() {
   const id = setInterval(() => {
     const milliseconds = refs.inputDate._flatpickr.latestSelectedDateObj - new Date();
-    if (milliseconds < 999) {
+    if (milliseconds < 0) {
       clearInterval(id);
       Notify.success('Your time is successfully up');
+      return;
     }
     refs.days.textContent = addLeadingZero(convertMs(milliseconds).days);
     refs.hours.textContent = addLeadingZero(convertMs(milliseconds).hours);
