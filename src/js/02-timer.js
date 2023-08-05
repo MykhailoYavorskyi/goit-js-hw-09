@@ -39,8 +39,11 @@ function onInput() {
 refs.startBtn.addEventListener('click', onSetDate);
 
 function onSetDate() {
-  setInterval(() => {
+  const id = setInterval(() => {
     const milliseconds = refs.inputDate._flatpickr.latestSelectedDateObj - new Date();
+    if (milliseconds < 999) {
+      clearInterval(id);
+    }
     refs.days.textContent = addLeadingZero(convertMs(milliseconds).days);
     refs.hours.textContent = addLeadingZero(convertMs(milliseconds).hours);
     refs.minutes.textContent = addLeadingZero(convertMs(milliseconds).minutes);
