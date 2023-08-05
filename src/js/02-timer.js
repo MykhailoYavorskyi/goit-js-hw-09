@@ -43,6 +43,7 @@ function onSetDate() {
     const milliseconds = refs.inputDate._flatpickr.latestSelectedDateObj - new Date();
     if (milliseconds < 999) {
       clearInterval(id);
+      Notify.success('Your time is successfully up');
     }
     refs.days.textContent = addLeadingZero(convertMs(milliseconds).days);
     refs.hours.textContent = addLeadingZero(convertMs(milliseconds).hours);
